@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  data_query_api:
+    image: bitnami/postgresql
+    ports: 
+      - 5434:5432
+    environment: 
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DATABASE=data_query_api
