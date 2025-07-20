@@ -6,6 +6,8 @@ import { upload } from '../config/upload';
 import { UploadUseCase } from '../useCases/datasets/UploadUseCase';
 import { PrismaDatasetsRepository } from '../repositories/prisma/PrismaDatasetsRepository';
 import { PrismaRecordsRepository } from '../repositories/prisma/PrismaRecordsRepository';
+import { ListDatasetsByUserUseCase } from '../useCases/datasets/ListDatasetsByUserUseCase';
+import { ListRecordsByDatasetUseCse } from '../useCases/datasets/ListRecordsByDatasetUseCase';
 
 const datasetsRoutes = Router();
 
@@ -40,6 +42,37 @@ datasetsRoutes.post(
         });
 
         return res.status(201).send();
+    }
+);
+
+datasetsRoutes.get(
+    '/',
+    ensureAuthenticated,
+    async(req, res) => {
+        const userId = req.user.id;
+        
+        const datasetsRepository = new PrismaDatasetsRepository();
+        const listDatasetsByUserUseCase = new ListDatasetsByUserUseCase(datasetsRepository);
+    
+        const datasets = await listDatasetsByUserUseCase.execute(userId);
+        
+        return res.status(200).send(datasets);
+    }
+);
+
+datasetsRoutes.get(
+    '/:datasetId/records',
+    ensureAuthenticated,
+     async(req, res) => {
+        const userId = req.user.id;
+        const { datasetId } = req.params;
+        
+        const datasetsRepository = new PrismaDatasetsRepository();
+        const listRecordsByDatasetUseCase = new ListRecordsByDatasetUseCse(datasetsRepository);
+
+        const records = await listRecordsByDatasetUseCase.execute(userId, datasetId);
+
+        return res.status(200).send(records);
     }
 );
 

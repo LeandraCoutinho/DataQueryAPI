@@ -5,6 +5,8 @@ import {
 
 import { prisma } from '../../prisma';
 
+import { Record } from '@prisma/client';
+
 export class PrismaRecordsRepository implements IRecordsRepository {
     async create({ datasetId, content }: CreateRecordData): Promise<void> {
         await prisma.record.createMany({
@@ -12,6 +14,17 @@ export class PrismaRecordsRepository implements IRecordsRepository {
             datasetId,
             dataJson: JSON.stringify(item),
             })),
+        });
+    }
+
+    async searchByKeyword(query: string): Promise<Record[]> {
+        return prisma.record.findMany({
+        where: {
+            dataJson: {
+                contains: query,
+                mode: 'insensitive', 
+            },
+        },
         });
     }
 }

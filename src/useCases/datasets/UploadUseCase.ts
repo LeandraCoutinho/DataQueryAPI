@@ -14,8 +14,8 @@ type UploadUseCaseRequest = {
 
 export class UploadUseCase {
     constructor(
-        private readonly datasetsRepository: IDatasetsRepository,
-        private readonly recordsRepository: IRecordsRepository
+      private readonly datasetsRepository: IDatasetsRepository,
+      private readonly recordsRepository: IRecordsRepository
     ) {}
 
     async execute({
