@@ -13,7 +13,7 @@ type AuthenticateUserUseCaseRequest = {
 };
 
 export class AuthenticateUserUseCase {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(private readonly usersRepository: IUsersRepository) {}
 
   async execute({ 
     email, 

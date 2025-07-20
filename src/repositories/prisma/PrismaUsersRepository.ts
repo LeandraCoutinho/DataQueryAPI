@@ -4,7 +4,6 @@ import {
 } from '../IUsersRepository';
 
 import { prisma } from '../../prisma';
-import { User } from '@prisma/client';
 
 export class PrismaUsersRepository implements IUsersRepository {
     async create(data: CreateUserData): Promise<void> {
