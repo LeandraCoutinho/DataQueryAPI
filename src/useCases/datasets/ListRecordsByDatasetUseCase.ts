@@ -12,7 +12,7 @@ export class ListRecordsByDatasetUseCase {
         }
 
         if (dataset.userId !== userId){
-            throw new AppError('User does not have access to this dataset', 409);
+            throw new AppError('User does not have access to this dataset', 403);
         }
 
         const records = await this.datasetsRepository.findRegistersByDataset(datasetId);

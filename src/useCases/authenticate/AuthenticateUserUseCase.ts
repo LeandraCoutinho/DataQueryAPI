@@ -28,7 +28,7 @@ export class AuthenticateUserUseCase {
     const passwordMatch = await compare(password, user.passwordHash);
 
     if (!passwordMatch) {
-      throw new AppError('User or Password incorrect', 400);
+      throw new AppError('User or Password incorrect', 401);
     }
 
     const token = sign({}, env.JWT_SECRET, {
