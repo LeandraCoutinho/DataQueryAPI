@@ -27,4 +27,10 @@ export class PrismaRecordsRepository implements IRecordsRepository {
         },
         });
     }
+
+    async findByDatasetId(datasetId: string): Promise<Record[]> {
+        return prisma.record.findMany({
+            where: { datasetId },
+        });
+    }
 }

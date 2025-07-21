@@ -2,8 +2,11 @@ import path from 'path';
 import fs from 'fs/promises';
 import csv from 'csvtojson';
 import pdfParse from 'pdf-parse';
+
 import { IDatasetsRepository } from '../../repositories/IDatasetsRepository';
 import { IRecordsRepository } from '../../repositories/IRecordsRepository';
+
+import { AppError } from '../../errors/AppError';
 
 type UploadUseCaseRequest = {
     name: string;
@@ -32,18 +35,26 @@ export class UploadUseCase {
     });
    
     const ext = path.extname(name).toLowerCase();
-    let jsonData: any[];
 
-    if (ext === '.csv') {
-      jsonData = await csv().fromFile(filePath);
-    } else if (ext === '.pdf') {
-      const buffer = await fs.readFile(filePath);
-      const data = await pdfParse(buffer);
-      jsonData = [{ text: data.text }];
+    if (ext === ".csv") {
+      const rows = await csv().fromFile(filePath);  
+      await Promise.all(
+        rows.map((row) =>
+          this.recordsRepository.create({
+            datasetId: dataset.id,
+            content: [row],
+          })
+        )
+      );
+    } else if (ext === ".pdf") {
+        const buffer = await fs.readFile(filePath);
+        const data = await pdfParse(buffer);
+        await this.recordsRepository.create({
+          datasetId: dataset.id,
+          content: [{ text: data.text }] as any[],
+        });
     } else {
-      throw new Error('Formato de arquivo não suportado para ingestão');
+      throw new AppError("File format not supported", 400);
     }
-
-    await this.recordsRepository.create({ datasetId: dataset.id, content: jsonData });
-  }
+  }   
 }
