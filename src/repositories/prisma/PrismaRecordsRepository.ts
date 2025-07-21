@@ -17,15 +17,18 @@ export class PrismaRecordsRepository implements IRecordsRepository {
         });
     }
 
-    async searchByKeyword(query: string): Promise<Record[]> {
-        return prisma.record.findMany({
+    async searchByKeyword(query: string, userId: string): Promise<Record[]> {
+    return prisma.record.findMany({
         where: {
-            dataJson: {
-                contains: query,
-                mode: 'insensitive', 
-            },
+        dataset: {
+            userId: userId,
         },
-        });
+        dataJson: {
+            contains: query,
+            mode: 'insensitive', 
+        },
+        },
+    });
     }
 
     async findByDatasetId(datasetId: string): Promise<Record[]> {

@@ -16,12 +16,13 @@ recordsRoutes.get(
             query: z.string()
         });
 
+        const userId = req.user.id;
         const { query } = querySchema.parse(req.query);
         
         const recordsRepository = new PrismaRecordsRepository();
         const searchRecordsUseCase = new SearchRecordsUseCase(recordsRepository);
 
-        const records = await searchRecordsUseCase.execute(query);
+        const records = await searchRecordsUseCase.execute(query, userId);
         return res.status(200).json(records);
     }
 );
