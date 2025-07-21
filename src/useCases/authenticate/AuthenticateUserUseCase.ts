@@ -22,13 +22,13 @@ export class AuthenticateUserUseCase {
     const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
-      throw new AppError('User does not exists');
+      throw new AppError('User does not exists', 404);
     }
 
     const passwordMatch = await compare(password, user.passwordHash);
 
     if (!passwordMatch) {
-      throw new AppError('User or Password incorrect');
+      throw new AppError('User or Password incorrect', 400);
     }
 
     const token = sign({}, env.JWT_SECRET, {

@@ -2,7 +2,7 @@ import { AppError } from '../../errors/AppError';
 
 import { IDatasetsRepository } from '../../repositories/IDatasetsRepository';
 
-export class ListRecordsByDatasetUseCse {
+export class ListRecordsByDatasetUseCase {
     constructor(private readonly datasetsRepository: IDatasetsRepository) {}
     async execute(userId: string, datasetId: string) {
         const dataset = await this.datasetsRepository.findById(datasetId);

@@ -20,7 +20,8 @@ export class AskQuestionUseCase {
   async execute({ 
     datasetId, 
     question, 
-    userId }: AskQuestionRequest) {
+    userId 
+  }: AskQuestionRequest) {
     const records = await this.recordsRepository.findByDatasetId(datasetId); 
 
     if (!records || records.length == 0) {

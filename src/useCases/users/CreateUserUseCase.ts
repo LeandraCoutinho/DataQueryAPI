@@ -22,7 +22,7 @@ export class CreateUserUseCase {
         const userByEmail = await this.usersRepository.findByEmail(email);
 
         if (userByEmail) {
-            throw new AppError('Email já está em uso');
+            throw new AppError('Email is already in use', 400);
         }
 
         const passwordHash = await hash(password, 8);

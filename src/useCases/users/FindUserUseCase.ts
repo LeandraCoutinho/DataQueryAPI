@@ -9,7 +9,7 @@ export class FindUserUseCase {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
-      throw new AppError('Usuário não encontrado na base de dados');
+      throw new AppError('User not found in database', 404);
     }
 
     delete (user as any).passwordHash;
