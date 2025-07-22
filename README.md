@@ -40,8 +40,8 @@ API RESTful para ingestão e consulta de dados com simulação de respostas por 
 
 ```bash
 # Clone o projeto
-git clone https://github.com/seu-usuario/data-query-api.git
-cd data-query-api
+git clone https://github.com/LeandraCoutinho/DataQueryAPI.git
+cd DataQueryAPI
 
 # Copie as variáveis de ambiente
 cp .env.example .env
