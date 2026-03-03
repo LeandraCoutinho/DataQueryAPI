@@ -46,7 +46,7 @@ export async function answerWithRAG(rawData: any[], question: string) {
 
   const llm = new ChatGroq({
     apiKey: env.GROQ_API_KEY,
-    model: "llama3-70b-8192",
+    model: "llama-3.3-70b-versatile",
     temperature: 0,
   });
 
