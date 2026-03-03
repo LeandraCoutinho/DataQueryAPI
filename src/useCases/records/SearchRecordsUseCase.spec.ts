@@ -14,6 +14,7 @@ describe('Search Records Use Case', () => {
   });
 
   it('should return matching records by keyword', async () => {
+    const userId = 'userId';
     recordsRepository.records.push(
       {
         id: 'rec-1',
@@ -29,15 +30,17 @@ describe('Search Records Use Case', () => {
       }
     );
 
-    const result = await sut.execute('AI');
+    const result = await sut.execute('AI', userId);
 
     expect(result).toHaveLength(1);
     expect(JSON.parse(result[0].dataJson).text).toContain('Artificial Intelligence');
   });
 
   it('should throw an error if query is empty', async () => {
-    await expect(() => sut.execute('')).rejects.toBeInstanceOf(AppError);
+    const userId = 'userId';
 
-    await expect(() => sut.execute('   ')).rejects.toBeInstanceOf(AppError);
+    await expect(() => sut.execute('', userId)).rejects.toBeInstanceOf(AppError);
+
+    await expect(() => sut.execute('   ', userId)).rejects.toBeInstanceOf(AppError);
   });
 });

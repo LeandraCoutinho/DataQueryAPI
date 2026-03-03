@@ -1,11 +1,28 @@
-version: '3'
+version: '3.8'
 
 services:
   data_query_api:
     image: bitnami/postgresql
-    ports: 
-      - 5434:5432
-    environment: 
+    container_name: data_query_api_db
+    ports:
+      - 5435:5432
+    environment:
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=12345678
       - POSTGRES_DATABASE=data_query_api
+    volumes:
+      - postgres_data:/bitnami/postgresql
+
+  app:
+    build: .
+    container_name: data_query_api_app
+    depends_on:
+      - data_query_api
+    ports:
+      - 3333:3333
+    environment:
+      - DATABASE_URL=postgresql://postgres:12345678@data_query_api:5432/data_query_api
+    command: sh -c "npx prisma migrate deploy && npm run dev"
+
+volumes:
+  postgres_data:
