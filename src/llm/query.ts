@@ -1,10 +1,30 @@
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory";
 import { Document } from "@langchain/core/documents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { ChatGroq } from "@langchain/groq";
-import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { env } from "../env";
+import { pipeline } from "@xenova/transformers";
+
+const extractorPromise = pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+
+export class LocalHFEmbeddings {
+  async embedQuery(text: string): Promise<number[]> {
+    const extractor = await extractorPromise;
+    const output: any = await extractor(text, { pooling: "mean", normalize: true });
+    return Array.from(output.data) as number[];
+  }
+
+  async embedDocuments(texts: string[]): Promise<number[][]> {
+    const extractor = await extractorPromise;
+    const out: number[][] = [];
+    for (const t of texts) {
+      const output: any = await extractor(t, { pooling: "mean", normalize: true });
+      out.push(Array.from(output.data) as number[]);
+    }
+    return out;
+  }
+}
 
 export async function answerWithRAG(rawData: any[], question: string) {
   const rawText = rawData
@@ -20,11 +40,7 @@ export async function answerWithRAG(rawData: any[], question: string) {
     new Document({ pageContent: rawText }),
   ]);
 
-  const embeddings = new HuggingFaceInferenceEmbeddings({
-    apiKey: env.HUGGINGFACE_API_KEY,
-    model: "sentence-transformers/all-MiniLM-L6-v2",
-  });
-
+  const embeddings = new LocalHFEmbeddings();
   const vectorstore = await MemoryVectorStore.fromDocuments(docs, embeddings);
   const retriever = vectorstore.asRetriever();
 
