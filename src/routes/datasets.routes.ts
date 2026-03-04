@@ -8,6 +8,7 @@ import { PrismaDatasetsRepository } from '../repositories/prisma/PrismaDatasetsR
 import { PrismaRecordsRepository } from '../repositories/prisma/PrismaRecordsRepository';
 import { ListDatasetsByUserUseCase } from '../useCases/datasets/ListDatasetsByUserUseCase';
 import { ListRecordsByDatasetUseCase } from '../useCases/datasets/ListRecordsByDatasetUseCase';
+import { AppError } from '../errors/AppError';
 
 const datasetsRoutes = Router();
 
@@ -66,6 +67,10 @@ datasetsRoutes.get(
      async(req, res) => {
         const userId = req.user.id;
         const { datasetId } = req.params;
+
+         if (Array.isArray(datasetId)) {
+            throw new AppError("Invalid datasetId", 400)
+         }
         
         const datasetsRepository = new PrismaDatasetsRepository();
         const listRecordsByDatasetUseCase = new ListRecordsByDatasetUseCase(datasetsRepository);
